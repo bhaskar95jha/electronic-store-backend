@@ -7,6 +7,9 @@ import com.bhaskar.store.management.repositories.UserRepo;
 import com.bhaskar.store.management.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,8 +57,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUser() {
-        List<User> users = userRepo.findAll();
+    public List<UserDto> getAllUser(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Page<User> pages = userRepo.findAll(pageable);
+        List<User> users = pages.getContent();
         List<UserDto> dtoList = users.stream().map((user) -> modelMapper.map(user,UserDto.class)).collect(Collectors.toList());
         return dtoList;
     }

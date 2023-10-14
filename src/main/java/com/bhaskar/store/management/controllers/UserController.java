@@ -48,8 +48,11 @@ public class UserController {
 
     //get all
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers(){
-        List<UserDto> users = userService.getAllUser();
+    public ResponseEntity<List<UserDto>> getAllUsers(
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize
+    ){
+        List<UserDto> users = userService.getAllUser(pageNumber,pageSize);
         return new ResponseEntity<>(users,HttpStatus.OK);
     }
 

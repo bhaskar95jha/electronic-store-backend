@@ -41,6 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String,Object>> methodArgumentNotvalidException(MethodArgumentNotValidException exception){
+        log.info("MethodArgumentNotValidException invoked");
         List<ObjectError> allErrors = exception.getBindingResult().getAllErrors();
         Map<String,Object>  response = new HashMap<>();
 
@@ -59,8 +60,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PropertyReferenceException.class)
     public ResponseEntity<ApiResponseMessage> propertyReferenceException(PropertyReferenceException exception){
+        log.info("PropertyReferenceException invoked");
         ApiResponseMessage response = ApiResponseMessage.builder().message(exception.getMessage()).status(HttpStatus.INTERNAL_SERVER_ERROR).isSuccess(true).build();
         return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(BadApiRequest.class)
+    public ResponseEntity<ApiResponseMessage> badApiResponseHandler(BadApiRequest exception){
+        log.info("BadApiRequest invoked");
+        ApiResponseMessage responseMessage = ApiResponseMessage.builder().message(exception.getMessage()).status(HttpStatus.BAD_REQUEST).isSuccess(false).build();
+        return new ResponseEntity<>(responseMessage,HttpStatus.BAD_REQUEST);
     }
 
 }

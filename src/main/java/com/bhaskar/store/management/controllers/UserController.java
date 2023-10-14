@@ -1,6 +1,7 @@
 package com.bhaskar.store.management.controllers;
 
 import com.bhaskar.store.management.dtos.ApiResponseMessage;
+import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.UserDto;
 import com.bhaskar.store.management.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +49,13 @@ public class UserController {
 
     //get all
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers(
+    public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(value = "sortBy", required = false, defaultValue = "name") String sortBy,
             @RequestParam(value = "sortDir", required = false, defaultValue = "asc") String sortDir
     ){
-        List<UserDto> users = userService.getAllUser(pageNumber,pageSize,sortBy,sortDir);
+        PageableResponse<UserDto> users = userService.getAllUser(pageNumber,pageSize,sortBy,sortDir);
         return new ResponseEntity<>(users,HttpStatus.OK);
     }
 

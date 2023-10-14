@@ -1,5 +1,6 @@
 package com.bhaskar.store.management.services;
 
+import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.UserDto;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface UserService {
     void deleteUser(String userId);
 
     //get all user
-    List<UserDto> getAllUser(int pageNumber,int pageSize,String sortBy, String sortDir);
+    PageableResponse<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     //get user by id
     UserDto getUserById(String userId);

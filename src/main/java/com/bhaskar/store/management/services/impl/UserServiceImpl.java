@@ -1,10 +1,12 @@
 package com.bhaskar.store.management.services.impl;
 
+import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.UserDto;
 import com.bhaskar.store.management.exceptions.ResourceNotFoundException;
 import com.bhaskar.store.management.models.User;
 import com.bhaskar.store.management.repositories.UserRepo;
 import com.bhaskar.store.management.services.UserService;
+import com.bhaskar.store.management.utility.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -58,15 +61,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUser(int pageNumber, int pageSize,String sortBy, String sortDir) {
+    public PageableResponse<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir) {
         //Sort sort = Sort.by(sortBy);
         Sort sort = sortDir.equalsIgnoreCase("asc")?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
         Page<User> pages = userRepo.findAll(pageable);
-        List<User> users = pages.getContent();
-        List<UserDto> dtoList = users.stream().map((user) -> modelMapper.map(user,UserDto.class)).collect(Collectors.toList());
-        return dtoList;
+
+        PageableResponse<UserDto> pageableResponse = Util.getPageableResponse(pages, UserDto.class);
+
+//        List<User> users = pages.getContent();
+//        List<UserDto> dtoList = users.stream().map((user) -> modelMapper.map(user,UserDto.class)).collect(Collectors.toList());
+//        PageableResponse<UserDto> response = new PageableResponse<>();
+//        response.setContent(dtoList);
+//        response.setPageNumber(pages.getNumber());
+//        response.setPageSize(pages.getSize());
+//        response.setTotalElements(pages.getTotalElements());
+//        response.setTotalPages(pages.getTotalPages());
+//        response.setLastPage(pages.isLast());
+
+        //by using builder pattern
+//        PageableResponse<UserDto> response = PageableResponse
+//                .builder()
+//                .content(Collections.singletonList((dtoList)))
+//                .pageNumber(pages.getNumber())
+//                .pageSize(pages.getSize())
+//                .totalElements(pages.getTotalElements())
+//                .totalPages(pages.getTotalPages())
+//                .lastPage(pages.isLast())
+//                .build();
+
+        return pageableResponse;
     }
 
     @Override

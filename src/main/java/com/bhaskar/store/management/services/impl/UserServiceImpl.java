@@ -1,5 +1,6 @@
 package com.bhaskar.store.management.services.impl;
 
+import com.bhaskar.store.management.controllers.UserController;
 import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.UserDto;
 import com.bhaskar.store.management.exceptions.ResourceNotFoundException;
@@ -8,13 +9,22 @@ import com.bhaskar.store.management.repositories.UserRepo;
 import com.bhaskar.store.management.services.UserService;
 import com.bhaskar.store.management.utility.Util;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +39,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Value("${user.profile.image.path}")
+    private String imagePath;
+
+    private Logger log = LoggerFactory.getLogger(UserController.class);
     @Override
     public UserDto createUser(UserDto userDto) {
         String userId = UUID.randomUUID().toString();
@@ -56,6 +70,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userId) {
         User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User doesn't found with given id"+userId));
+        //delete user profile image
+        String imageFullPathAndName = imagePath+ File.separator+user.getImageName();
+        try{
+            Path path = Paths.get(imageFullPathAndName);
+            Files.delete(path);
+        }catch (NoSuchFileException ex){
+            log.info("User image not found in folder");
+            ex.printStackTrace();
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         userRepo.delete(user);
         //userRepo.deleteById(userId);
     }

@@ -1,5 +1,6 @@
 package com.bhaskar.store.management.services.impl;
 
+import com.bhaskar.store.management.controllers.UserController;
 import com.bhaskar.store.management.dtos.CategoryDto;
 import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.exceptions.ResourceNotFoundException;
@@ -8,13 +9,22 @@ import com.bhaskar.store.management.repositories.CategoryRepo;
 import com.bhaskar.store.management.services.CategoryService;
 import com.bhaskar.store.management.utility.Util;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,6 +37,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Value("${category.profile.image.path}")
+    private String imageUploadPath;
+
+    private Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
@@ -55,6 +70,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(String categoryId) {
         Category category = categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with id"+categoryId));
+        //delete user profile image
+        String imageFullPathAndName = imageUploadPath+ File.separator+category.getCategoryImage();
+        try{
+            Path path = Paths.get(imageFullPathAndName);
+            Files.delete(path);
+        }catch (NoSuchFileException ex){
+            log.info("User image not found in folder");
+            ex.printStackTrace();
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         categoryRepo.delete(category);
 
     }

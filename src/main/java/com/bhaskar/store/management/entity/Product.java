@@ -2,8 +2,7 @@ package com.bhaskar.store.management.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -26,5 +25,8 @@ public class Product {
     private boolean stock ;
     private boolean live;
     private String productImage;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 }

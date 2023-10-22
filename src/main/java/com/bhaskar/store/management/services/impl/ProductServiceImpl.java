@@ -8,16 +8,24 @@ import com.bhaskar.store.management.repositories.ProductRepo;
 import com.bhaskar.store.management.services.ProductService;
 import com.bhaskar.store.management.utility.Util;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -28,10 +36,16 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ModelMapper mapper;
 
+    @Value("${product.profile.image.path}")
+    private String imageUploadPath;
+
+    Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         String id = UUID.randomUUID().toString();
         productDto.setProductId(id);
+        productDto.setAddedDate(new Date());
 
         Product product = mapper.map(productDto,Product.class);
         Product savedProduct = productRepo.save(product);
@@ -69,6 +83,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(String productId) {
         Product product = productRepo.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not available with id "+productId));
+
+        //delete user profile image
+        String imageFullPathAndName = imageUploadPath+ File.separator+product.getProductImage();
+
+        try{
+            Path path = Paths.get(imageFullPathAndName);
+            Files.delete(path);
+        }catch (NoSuchFileException ex){
+            log.info("Product image not found in folder");
+            ex.printStackTrace();
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         productRepo.delete(product);
     }
 
@@ -91,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
     public PageableResponse<ProductDto> getAllLiveProduct(int pageNumber, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
-        Page<Product> pages = productRepo.findByIsLiveTrue(pageable);
+        Page<Product> pages = productRepo.findByLiveTrue(pageable);
         PageableResponse<ProductDto> pageableResponse = Util.getPageableResponse(pages, ProductDto.class);
         return pageableResponse;
     }

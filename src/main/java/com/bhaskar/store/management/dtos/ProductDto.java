@@ -25,6 +25,6 @@ public class ProductDto {
     private String color;
     private Date addedDate;
     private boolean stock ;
-    private boolean isLive;
+    private boolean live;
     private String productImage;
 }

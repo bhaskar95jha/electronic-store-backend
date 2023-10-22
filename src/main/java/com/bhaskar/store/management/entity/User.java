@@ -1,4 +1,4 @@
-package com.bhaskar.store.management.models;
+package com.bhaskar.store.management.entity;
 
 import lombok.*;
 

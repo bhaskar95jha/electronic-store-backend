@@ -1,6 +1,6 @@
 package com.bhaskar.store.management.repositories;
 
-import com.bhaskar.store.management.models.Category;
+import com.bhaskar.store.management.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

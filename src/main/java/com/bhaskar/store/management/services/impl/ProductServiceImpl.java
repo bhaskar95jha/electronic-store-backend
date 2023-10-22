@@ -15,9 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Date;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -32,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto createProduct(ProductDto productDto) {
         String id = UUID.randomUUID().toString();
         productDto.setProductId(id);
+        productDto.setAddedDate(new Date());
 
         Product product = mapper.map(productDto,Product.class);
         Product savedProduct = productRepo.save(product);
@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
     public PageableResponse<ProductDto> getAllLiveProduct(int pageNumber, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
-        Page<Product> pages = productRepo.findByIsLiveTrue(pageable);
+        Page<Product> pages = productRepo.findByLiveTrue(pageable);
         PageableResponse<ProductDto> pageableResponse = Util.getPageableResponse(pages, ProductDto.class);
         return pageableResponse;
     }

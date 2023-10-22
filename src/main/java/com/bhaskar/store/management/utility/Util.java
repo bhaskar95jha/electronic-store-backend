@@ -1,8 +1,6 @@
 package com.bhaskar.store.management.utility;
 
 import com.bhaskar.store.management.dtos.PageableResponse;
-import com.bhaskar.store.management.dtos.UserDto;
-import com.bhaskar.store.management.models.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 

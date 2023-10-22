@@ -4,7 +4,7 @@ import com.bhaskar.store.management.controllers.UserController;
 import com.bhaskar.store.management.dtos.CategoryDto;
 import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.exceptions.ResourceNotFoundException;
-import com.bhaskar.store.management.models.Category;
+import com.bhaskar.store.management.entity.Category;
 import com.bhaskar.store.management.repositories.CategoryRepo;
 import com.bhaskar.store.management.services.CategoryService;
 import com.bhaskar.store.management.utility.Util;
@@ -84,7 +84,6 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepo.delete(category);
 
     }
-
 
     @Override
     public PageableResponse<CategoryDto> getAllCategory(int pageNumber, int pageSize, String sortBy,String sortDir) {

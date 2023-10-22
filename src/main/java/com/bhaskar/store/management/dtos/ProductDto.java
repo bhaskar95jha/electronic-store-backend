@@ -26,4 +26,5 @@ public class ProductDto {
     private Date addedDate;
     private boolean stock ;
     private boolean isLive;
+    private String productImage;
 }

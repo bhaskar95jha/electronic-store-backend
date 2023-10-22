@@ -21,10 +21,10 @@ public class Product {
     private int mrp;
     private int sellPrice;
     private int quantity;
-
-
+    private String color;
     private Date addedDate;
     private boolean stock ;
     private boolean isLive;
+    private String productImage;
 
 }

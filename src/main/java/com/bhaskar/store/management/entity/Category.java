@@ -2,8 +2,9 @@ package com.bhaskar.store.management.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,4 +19,6 @@ public class Category {
     private String title;
     private String description;
     private String categoryImage;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Product> products = new ArrayList<>();
 }

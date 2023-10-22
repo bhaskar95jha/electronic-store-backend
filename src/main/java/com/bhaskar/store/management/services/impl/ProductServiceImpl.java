@@ -1,12 +1,18 @@
 package com.bhaskar.store.management.services.impl;
 
+import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.ProductDto;
 import com.bhaskar.store.management.entity.Product;
 import com.bhaskar.store.management.exceptions.ResourceNotFoundException;
 import com.bhaskar.store.management.repositories.ProductRepo;
 import com.bhaskar.store.management.services.ProductService;
+import com.bhaskar.store.management.utility.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,23 +79,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getAllProduct() {
-        List<Product> products = productRepo.findAll();
-        List<ProductDto> productDtoList = products.stream().map((product) -> mapper.map(product, ProductDto.class)).collect(Collectors.toList());
-        return productDtoList;
+    public PageableResponse<ProductDto> getAllProduct(int pageNumber, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+        Page<Product> pages = productRepo.findAll(pageable);
+        PageableResponse<ProductDto> pageableResponse = Util.getPageableResponse(pages, ProductDto.class);
+        return pageableResponse;
     }
 
     @Override
-    public List<ProductDto> getAllLiveProduct() {
-        List<Product> products = productRepo.findByIsLiveTrue();
-        List<ProductDto> productDtos = products.stream().map((product) -> mapper.map(product, ProductDto.class)).collect(Collectors.toList());
-        return productDtos;
+    public PageableResponse<ProductDto> getAllLiveProduct(int pageNumber, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+        Page<Product> pages = productRepo.findByIsLiveTrue(pageable);
+        PageableResponse<ProductDto> pageableResponse = Util.getPageableResponse(pages, ProductDto.class);
+        return pageableResponse;
     }
 
     @Override
-    public List<ProductDto> searchByTitle(String keyword) {
-        List<Product> products = productRepo.findByTitleContaining(keyword);
-        List<ProductDto> productDtos = products.stream().map((product) -> mapper.map(product, ProductDto.class)).collect(Collectors.toList());
-        return productDtos;
+    public PageableResponse<ProductDto> searchByTitle(String keyword,int pageNumber, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+
+        Page<Product> pages = productRepo.findByTitleContaining(keyword,pageable);
+        PageableResponse<ProductDto> pageableResponse = Util.getPageableResponse(pages, ProductDto.class);
+        return pageableResponse;
     }
 }

@@ -1,5 +1,6 @@
 package com.bhaskar.store.management.services;
 
+import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.ProductDto;
 
 import java.util.List;
@@ -18,12 +19,12 @@ public interface ProductService {
     ProductDto getProductById(String productId);
 
     //get all product
-    List<ProductDto> getAllProduct();
+    PageableResponse<ProductDto> getAllProduct(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     //get all : live product
-    List<ProductDto> getAllLiveProduct();
+    PageableResponse<ProductDto> getAllLiveProduct(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     //search by title
-    List<ProductDto> searchByTitle(String keyword);
+    PageableResponse<ProductDto> searchByTitle(String keyword,int pageNumber, int pageSize, String sortBy, String sortDir);
 
 }

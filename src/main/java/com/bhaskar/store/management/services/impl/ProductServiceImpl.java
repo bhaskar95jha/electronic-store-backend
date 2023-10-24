@@ -1,9 +1,12 @@
 package com.bhaskar.store.management.services.impl;
 
+import com.bhaskar.store.management.dtos.CategoryDto;
 import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.ProductDto;
+import com.bhaskar.store.management.entity.Category;
 import com.bhaskar.store.management.entity.Product;
 import com.bhaskar.store.management.exceptions.ResourceNotFoundException;
+import com.bhaskar.store.management.repositories.CategoryRepo;
 import com.bhaskar.store.management.repositories.ProductRepo;
 import com.bhaskar.store.management.services.ProductService;
 import com.bhaskar.store.management.utility.Util;
@@ -36,8 +39,12 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private CategoryRepo categoryRepo;
+
     @Value("${product.profile.image.path}")
     private String imageUploadPath;
+
 
     Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
@@ -132,5 +139,25 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> pages = productRepo.findByTitleContaining(keyword,pageable);
         PageableResponse<ProductDto> pageableResponse = Util.getPageableResponse(pages, ProductDto.class);
         return pageableResponse;
+    }
+
+    @Override
+    public ProductDto createWithCategory(ProductDto productDto, String categoryId) {
+        //fetch the category
+        Category category = categoryRepo.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category not found with id "+categoryId));
+
+        String id = UUID.randomUUID().toString();
+        productDto.setProductId(id);
+        productDto.setAddedDate(new Date());
+        productDto.setCategory(mapper.map(category, CategoryDto.class));
+
+        //saved category
+        Product product = mapper.map(productDto,Product.class);
+
+        Product savedProduct = productRepo.save(product);
+
+        ProductDto savedDto = mapper.map(savedProduct,ProductDto.class);
+
+        return savedDto;
     }
 }

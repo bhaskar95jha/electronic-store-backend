@@ -1,5 +1,6 @@
 package com.bhaskar.store.management.dtos;
 
+import com.bhaskar.store.management.entity.Category;
 import lombok.*;
 
 import javax.validation.constraints.Size;
@@ -27,4 +28,5 @@ public class ProductDto {
     private boolean stock ;
     private boolean live;
     private String productImage;
+    private CategoryDto category;
 }

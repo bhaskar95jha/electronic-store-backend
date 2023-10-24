@@ -1,5 +1,6 @@
 package com.bhaskar.store.management.dtos;
 
+import com.bhaskar.store.management.entity.Product;
 import lombok.*;
 
 @Getter
@@ -9,7 +10,7 @@ import lombok.*;
 @Builder
 public class CartItemDto {
     private int cartItemId;
-    private ProductDto productDto;
+    private ProductDto product;
     private int quantity;
-    private int totqlPrice;
+    private int totalPrice;
 }

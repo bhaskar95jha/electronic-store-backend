@@ -1,11 +1,9 @@
 package com.bhaskar.store.management.controllers;
 
-import com.bhaskar.store.management.dtos.ApiResponseMessage;
-import com.bhaskar.store.management.dtos.CategoryDto;
-import com.bhaskar.store.management.dtos.ImageResponse;
-import com.bhaskar.store.management.dtos.PageableResponse;
+import com.bhaskar.store.management.dtos.*;
 import com.bhaskar.store.management.services.CategoryService;
 import com.bhaskar.store.management.services.FileService;
+import com.bhaskar.store.management.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -26,6 +24,9 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ProductService productService;
 
     @Autowired
     private FileService fileService;
@@ -115,6 +116,15 @@ public class CategoryController {
         InputStream resource = fileService.getResource(imageUploadPath, categoryDto.getCategoryImage());
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource,response.getOutputStream());
+    }
+
+    @PostMapping("/{categoryId}/products")
+    public ResponseEntity<ProductDto> createProductWithCategory(
+            @PathVariable String categoryId,
+            @RequestBody ProductDto productDto){
+        ProductDto product = productService.createWithCategory(productDto, categoryId);
+
+        return new ResponseEntity<>(product,HttpStatus.CREATED);
     }
 
 }

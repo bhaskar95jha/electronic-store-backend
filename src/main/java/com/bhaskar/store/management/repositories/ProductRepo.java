@@ -1,5 +1,6 @@
 package com.bhaskar.store.management.repositories;
 
+import com.bhaskar.store.management.entity.Category;
 import com.bhaskar.store.management.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,4 +12,6 @@ public interface ProductRepo extends JpaRepository<Product,String> {
     //search by title
     Page<Product> findByTitleContaining(String keyword,Pageable pageable);
     Page<Product> findByLiveTrue(Pageable pageable);
+
+    Page<Product> findByCategory(Category category,Pageable pageable);
 }

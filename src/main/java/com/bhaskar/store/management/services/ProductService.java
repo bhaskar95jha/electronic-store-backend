@@ -30,4 +30,9 @@ public interface ProductService {
     //create product with category_id
     ProductDto createWithCategory(ProductDto productDto, String categoryId);
 
+    ProductDto assignCategoryToExistingProduct(String productId,String categoryId);
+
+    //get all products with same category
+    PageableResponse<ProductDto> getAllProductsWithSameCategory(String categoryId,int pageNumber, int pageSize, String sortBy, String sortDir);
+
 }

@@ -118,6 +118,7 @@ public class CategoryController {
         StreamUtils.copy(resource,response.getOutputStream());
     }
 
+    //create product with category
     @PostMapping("/{categoryId}/products")
     public ResponseEntity<ProductDto> createProductWithCategory(
             @PathVariable String categoryId,
@@ -125,6 +126,29 @@ public class CategoryController {
         ProductDto product = productService.createWithCategory(productDto, categoryId);
 
         return new ResponseEntity<>(product,HttpStatus.CREATED);
+    }
+
+    //assign category to existing product
+    @PutMapping("/{categoryId}/products/{productId}")
+    public ResponseEntity<ProductDto> assignCategoryToProduct(
+            @PathVariable String categoryId,
+            @PathVariable String productId
+    ){
+        ProductDto productDto = productService.assignCategoryToExistingProduct(productId, categoryId);
+        return new ResponseEntity<>(productDto,HttpStatus.OK);
+    }
+
+    //ge all products with same categories
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<PageableResponse<ProductDto>> getAllProductsWithSameCategory(
+            @PathVariable String categoryId,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "name") String sortBy,
+            @RequestParam(value = "sortDir", required = false, defaultValue = "asc") String sortDir
+    ){
+        PageableResponse<ProductDto> pageableResponse = productService.getAllProductsWithSameCategory(categoryId,pageNumber,pageSize,sortBy,sortDir);
+        return new ResponseEntity<>(pageableResponse,HttpStatus.OK);
     }
 
 }

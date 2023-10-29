@@ -8,7 +8,7 @@ public interface OrderService {
     OrderDto createOrder(OrderDto orderDto,String userId,String cartId);
 
     //remove order
-    OrderDto removeOrder(String orderId);
+    void removeOrder(String orderId);
 
     //get order of user
     PageableResponse<OrderDto> getOrderByUser(String userId,int pageNumber,int pageSize,String sortBy, String sortDir);

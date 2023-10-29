@@ -11,8 +11,13 @@ import com.bhaskar.store.management.repositories.OrderRepo;
 import com.bhaskar.store.management.repositories.ProductRepo;
 import com.bhaskar.store.management.repositories.UserRepo;
 import com.bhaskar.store.management.services.OrderService;
+import com.bhaskar.store.management.utility.Util;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -121,17 +126,38 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto removeOrder(String orderId) {
-        return null;
+    public void removeOrder(String orderId) {
+
+        Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Order is not found with id : " + orderId));
+        orderRepo.delete(order);
+
     }
 
     @Override
     public PageableResponse<OrderDto> getOrderByUser(String userId, int pageNumber, int pageSize, String sortBy, String sortDir) {
-        return null;
+
+        Sort sort = sortDir.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+
+        User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User is not found with id " + userId));
+
+        Page<Order> pages = orderRepo.findByUser(user, pageable);
+
+        PageableResponse<OrderDto> pageableResponse = Util.getPageableResponse(pages, OrderDto.class);
+
+        return pageableResponse;
+
     }
 
     @Override
     public PageableResponse<OrderDto> getAllOrder(int pageNumber, int pageSize, String sortBy, String sortDir) {
-        return null;
+        Sort sort = sortDir.equalsIgnoreCase("desc")?Sort.by(sortBy).descending():Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+
+        Page<Order> pages = orderRepo.findAll(pageable);
+
+        PageableResponse<OrderDto> pageableResponse = Util.getPageableResponse(pages, OrderDto.class);
+
+        return pageableResponse;
     }
 }

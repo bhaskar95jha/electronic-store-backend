@@ -16,5 +16,7 @@ public interface OrderService {
     //get orders
     PageableResponse<OrderDto> getAllOrder(int pageNumber,int pageSize,String sortBy, String sortDir);
 
+    OrderDto updateOrder(OrderDto orderDto, String orderId);
+
     //other api related to user
 }

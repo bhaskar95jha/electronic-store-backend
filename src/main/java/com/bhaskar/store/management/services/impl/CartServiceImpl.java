@@ -71,7 +71,7 @@ public class CartServiceImpl implements CartService {
         List<CartItem> items = cart.getItems();
         //if product already present in cart then update the quantity and total price
 
-        List<CartItem> updatedItem = items.stream().map(item -> {
+        items = items.stream().map(item -> {
                     if (item.getProduct().getProductId().equalsIgnoreCase(productId)) {
                         item.setQuantity(quantity);
                         item.setTotalPrice(quantity * product.getSellPrice());
@@ -80,7 +80,7 @@ public class CartServiceImpl implements CartService {
                     return item;
                 }
         ).collect(Collectors.toList());
-        cart.setItems(updatedItem);
+        //cart.setItems(updatedItem);
 
         //if product is not in the cart
         if(flag.get() == 0){

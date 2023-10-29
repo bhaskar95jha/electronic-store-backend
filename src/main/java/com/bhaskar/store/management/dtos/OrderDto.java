@@ -20,7 +20,7 @@ public class OrderDto {
     private String billingAddress;
     private String billingPhone;
     private String billingName;
-    private Date orderDate= new Date();
+    private Date orderDate;
     private Date deliveredDate;
     private List<OrderItemDto> orderItems = new ArrayList<>();
 }

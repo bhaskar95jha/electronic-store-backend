@@ -63,7 +63,7 @@ public class CategoryController {
     public ResponseEntity<PageableResponse<CategoryDto>> getAllCategory(
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "name") String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "title") String sortBy,
             @RequestParam(value = "sortDir", required = false, defaultValue = "asc") String sortDir
     ){
         PageableResponse<CategoryDto> allCategory = categoryService.getAllCategory(pageNumber, pageSize, sortBy, sortDir);

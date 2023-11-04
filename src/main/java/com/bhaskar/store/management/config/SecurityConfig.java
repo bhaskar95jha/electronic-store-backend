@@ -30,6 +30,21 @@ public class SecurityConfig {
         return daoAuthenticationProvider;
     }
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+        httpSecurity
+                .csrf().disable()
+                .cors().disable()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .httpBasic();
+
+        return httpSecurity.build();
+    }
+
+
     //form based login customization
 
 //    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {

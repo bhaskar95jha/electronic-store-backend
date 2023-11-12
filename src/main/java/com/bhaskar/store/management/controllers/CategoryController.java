@@ -4,6 +4,7 @@ import com.bhaskar.store.management.dtos.*;
 import com.bhaskar.store.management.services.CategoryService;
 import com.bhaskar.store.management.services.FileService;
 import com.bhaskar.store.management.services.ProductService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
+@Api(value = "CategoryController" , description = "This Rest API is related to perform Category operations !!")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

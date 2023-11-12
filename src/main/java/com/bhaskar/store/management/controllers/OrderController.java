@@ -4,6 +4,7 @@ import com.bhaskar.store.management.dtos.ApiResponseMessage;
 import com.bhaskar.store.management.dtos.OrderDto;
 import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.services.OrderService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/orders")
+@Api(value = "OrderController" , description = "This Rest API is related to perform Order related operations !!")
 public class OrderController {
 
     @Autowired

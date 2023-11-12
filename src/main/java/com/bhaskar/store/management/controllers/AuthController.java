@@ -6,6 +6,7 @@ import com.bhaskar.store.management.dtos.UserDto;
 import com.bhaskar.store.management.exceptions.BadApiRequest;
 import com.bhaskar.store.management.security.JwtHelper;
 import com.bhaskar.store.management.services.UserService;
+import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/auth")
+@Api(value = "AuthController" , description = "This Rest API is related to perform Authentication operations !!")
 public class AuthController {
 
     @Autowired

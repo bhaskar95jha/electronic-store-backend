@@ -4,6 +4,7 @@ import com.bhaskar.store.management.dtos.ApiResponseMessage;
 import com.bhaskar.store.management.dtos.CartDto;
 import com.bhaskar.store.management.dtos.ItemToCart;
 import com.bhaskar.store.management.services.CartService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/carts")
+@Api(value = "CartController" , description = "This Rest API is related to perform Cart operations !!")
 public class CartController {
     @Autowired
     private CartService cartService;

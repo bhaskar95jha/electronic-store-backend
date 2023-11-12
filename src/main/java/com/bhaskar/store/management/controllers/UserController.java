@@ -6,6 +6,10 @@ import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.UserDto;
 import com.bhaskar.store.management.services.FileService;
 import com.bhaskar.store.management.services.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Api(value = "UserController" , description = "This Rest API is related to perform USER operations !!")
 public class UserController {
 
     @Autowired
@@ -67,6 +72,12 @@ public class UserController {
 
     //get all
     @GetMapping
+    @ApiOperation(value = "get All Users", response = ResponseEntity.class, tags = {"user-controller"})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully get the response"),
+            @ApiResponse(code = 401, message = "Unauthorized user"),
+            @ApiResponse(code = 400, message = "Not found")
+    })
     public ResponseEntity<PageableResponse<UserDto>> getAllUsers(
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,

@@ -36,6 +36,13 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private final String[] PUBLIC_URLS={
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-resources/**",
+            "/v3/api-docs"
+    };
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -55,6 +62,8 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,"/users")
                 .permitAll()
                 .antMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN")
+                .antMatchers(PUBLIC_URLS)
+                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

@@ -3,8 +3,10 @@ package com.bhaskar.store.management.services.impl;
 import com.bhaskar.store.management.controllers.UserController;
 import com.bhaskar.store.management.dtos.PageableResponse;
 import com.bhaskar.store.management.dtos.UserDto;
+import com.bhaskar.store.management.entity.Role;
 import com.bhaskar.store.management.exceptions.ResourceNotFoundException;
 import com.bhaskar.store.management.entity.User;
+import com.bhaskar.store.management.repositories.RoleRepository;
 import com.bhaskar.store.management.repositories.UserRepo;
 import com.bhaskar.store.management.services.UserService;
 import com.bhaskar.store.management.utility.Util;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -26,6 +29,8 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,13 +45,26 @@ public class UserServiceImpl implements UserService {
 
     @Value("${user.profile.image.path}")
     private String imagePath;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Value("${normal.role.id}")
+    private String normalRoleId;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     private Logger log = LoggerFactory.getLogger(UserController.class);
     @Override
     public UserDto createUser(UserDto userDto) {
         String userId = UUID.randomUUID().toString();
         userDto.setUserId(userId);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User user = modelMapper.map(userDto,User.class);
+
+        //fetch role of normal user and set it to user
+        Role role = roleRepository.findById(normalRoleId).orElseThrow(() -> new ResourceNotFoundException("Role doesn't found with given id "+normalRoleId));
+        user.getRoles().add(role);
+
         User savedUser = userRepo.save(user);
         UserDto savedUserDto = modelMapper.map(savedUser,UserDto.class);
         return savedUserDto;

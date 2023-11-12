@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,12 +35,14 @@ public class CategoryController {
     @Value("${category.profile.image.path}")
     private String imageUploadPath;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
         CategoryDto createCategoryDto = categoryService.createCategory(categoryDto);
         return new ResponseEntity<>(createCategoryDto, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> upadteCategory(@Valid @RequestBody CategoryDto categoryDto,
                                                       @PathVariable String categoryId){
@@ -47,6 +50,7 @@ public class CategoryController {
         return new ResponseEntity<>(updateCategoryDto,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping ("/{categoryId}")
     public ResponseEntity<ApiResponseMessage> deleteCategory(@PathVariable String categoryId){
         categoryService.deleteCategory(categoryId);
@@ -63,7 +67,7 @@ public class CategoryController {
     public ResponseEntity<PageableResponse<CategoryDto>> getAllCategory(
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(value = "sortBy", required = false, defaultValue = "name") String sortBy,
+            @RequestParam(value = "sortBy", required = false, defaultValue = "title") String sortBy,
             @RequestParam(value = "sortDir", required = false, defaultValue = "asc") String sortDir
     ){
         PageableResponse<CategoryDto> allCategory = categoryService.getAllCategory(pageNumber, pageSize, sortBy, sortDir);
@@ -88,6 +92,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryDtos);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/catimage/{categoryId}")
     public ResponseEntity<ImageResponse> uploadCategoryImage(
             @RequestParam("categoryImage") MultipartFile image,
@@ -119,6 +124,7 @@ public class CategoryController {
     }
 
     //create product with category
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{categoryId}/products")
     public ResponseEntity<ProductDto> createProductWithCategory(
             @PathVariable String categoryId,
@@ -129,6 +135,7 @@ public class CategoryController {
     }
 
     //assign category to existing product
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{categoryId}/products/{productId}")
     public ResponseEntity<ProductDto> assignCategoryToProduct(
             @PathVariable String categoryId,

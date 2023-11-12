@@ -37,9 +37,9 @@ public class StoreManagementApplication implements CommandLineRunner {
 
             Role roleAdmin = Role.builder().roleId(role_admin_id).roleName("ROLE_ADMIN").build();
             Role roleNormal = Role.builder().roleId(role_normal_id).roleName("ROLE_NORMAL").build();
-            roleRepository.saveAll(Arrays.asList(roleAdmin,roleNormal));
-//            roleRepository.save(roleAdmin);
-//            roleRepository.save(roleNormal);
+            //roleRepository.saveAll(Arrays.asList(roleAdmin,roleNormal));
+            roleRepository.save(roleAdmin);
+            roleRepository.save(roleNormal);
         }catch (Exception ex){
             ex.getStackTrace();
         }
